@@ -49,6 +49,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				ShowWindow(GetDlgItem(hWnd, 2), SW_SHOW);
 			}
 		}
+	case WM_CLOSE:
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
