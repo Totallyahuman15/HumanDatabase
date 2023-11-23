@@ -4,18 +4,12 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	HWND hButton;
+	HWND hText;
 
 	switch (uMsg)
 	{
-	case WM_PAINT:
-		PAINTSTRUCT ps;
-		hdc = BeginPaint(hWnd, &ps);
-
-		TextOut(hdc, 20, 20, "Hello World!", wcslen(L"Hello World!"));
-
-		EndPaint(hWnd, &ps);
-		break;
 	case WM_CREATE:
+		// hButton
 		hButton = CreateWindowEx(
 			0,
 			"BUTTON",
@@ -31,16 +25,30 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		SetWindowLongPtr(hWnd, WS_CHILD, (LONG)hButton);
+
+		// hText
+		hText = CreateWindowEx(
+			0,
+			"STATIC",
+			"You clicked the button!",
+			WS_CHILD,
+			0, 0,
+			100, 100,
+			hWnd,
+			(HMENU)2,
+			GetModuleHandle(NULL),
+			NULL
+		);
+
 		break;
 	case WM_COMMAND:
-		if (LOWORD(wParam) == ID_MY_BUTTON)
+		if (HIWORD(wParam) == BN_CLICKED)
 		{
-			MessageBox(hWnd, "Harder~", ";3", MB_OK);
+			if (LOWORD(wParam) == ID_MY_BUTTON)
+			{
+				ShowWindow(GetDlgItem(hWnd, 2), SW_SHOW);
+			}
 		}
-		break;
-	case WM_CLOSE:
-		DestroyWindow(hWnd);
-		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
