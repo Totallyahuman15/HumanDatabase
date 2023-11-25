@@ -2,8 +2,10 @@
 
 #include <Windows.h>
 #include <Winuser.h>
+#include <CommCtrl.h>
 
-#define ID_MY_BUTTON 1001
+#define IDC_COMBOBOX 1001
+#define IDC_SUBMITBUTTON 1001
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

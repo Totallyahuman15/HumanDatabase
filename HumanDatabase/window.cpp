@@ -2,41 +2,38 @@
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	HDC hdc;
+	HWND hComboBox;
 	HWND hButton;
-	HWND hText;
 
 	switch (uMsg)
 	{
 	case WM_CREATE:
-		// hButton
+		hComboBox = CreateWindowEx(
+			0,
+			WC_COMBOBOX,
+			TEXT(""),
+			CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
+			0, 0,
+			200, 200,
+			hWnd,
+			(HMENU)IDC_COMBOBOX,
+			GetModuleHandle(nullptr),
+			NULL
+		);
+		SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)"Item 1");
+		SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)"Item 2");
+		SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)"Item 3");
+
 		hButton = CreateWindowEx(
 			0,
 			"BUTTON",
-			"Click Me!",
-			WS_VISIBLE | WS_CHILD,
-			100,
-			100,
-			100,
-			30,
+			"Submit",
+			WS_CHILD | WS_VISIBLE,
+			0, 20,
+			100, 30,
 			hWnd,
-			(HMENU)ID_MY_BUTTON,
-			GetModuleHandle(NULL),
-			NULL
-		);
-		SetWindowLongPtr(hWnd, WS_CHILD, (LONG)hButton);
-
-		// hText
-		hText = CreateWindowEx(
-			0,
-			"STATIC",
-			"You clicked the button!",
-			WS_CHILD,
-			0, 0,
-			100, 100,
-			hWnd,
-			(HMENU)2,
-			GetModuleHandle(NULL),
+			(HMENU)IDC_SUBMITBUTTON,
+			GetModuleHandle(nullptr),
 			NULL
 		);
 
@@ -44,9 +41,25 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		if (HIWORD(wParam) == BN_CLICKED)
 		{
-			if (LOWORD(wParam) == ID_MY_BUTTON)
+			if (LOWORD(wParam) == IDC_SUBMITBUTTON)
 			{
-				ShowWindow(GetDlgItem(hWnd, 2), SW_SHOW);
+				hComboBox = GetDlgItem(hWnd, IDC_SUBMITBUTTON);
+				int selectedIndex = SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
+				switch (selectedIndex)
+				{
+				case 0:
+					MessageBox(hWnd, TEXT("Item 1 selected."), TEXT("Selected Item"), MB_OK);
+					break;
+				case 1:
+					MessageBox(hWnd, TEXT("Item 2 selected."), TEXT("Selected Item"), MB_OK);
+					break;
+				case 2:
+					MessageBox(hWnd, TEXT("Item 3 selected."), TEXT("Selected Item"), MB_OK);
+					break;
+				default:
+					MessageBox(hWnd, TEXT("No item selected"), TEXT("Selected Item"), MB_OK);
+					break;
+				}
 			}
 		}
 	case WM_CLOSE:
